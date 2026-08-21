@@ -1,0 +1,467 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Vector Field Lab</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+  <div id="app">
+    <header id="topbar">
+      <div class="brand"><span class="nabla">∇</span> Vector&nbsp;Field&nbsp;Lab</div>
+      <nav class="tabs-wrap">
+        <div class="tab-group">
+          <span class="tab-group-label" id="grp-math">Math</span>
+          <div class="tabs">
+            <button id="tab-functions" class="tab">Functions</button>
+            <button id="tab-seq" class="tab">Sequences</button>
+            <button id="tab-matrix" class="tab">Matrix</button>
+            <button id="tab-fields" class="tab active">Fields</button>
+            <button id="tab-manifolds" class="tab">Manifolds</button>
+            <button id="tab-fourier" class="tab">Fourier</button>
+            <button id="tab-cplx" class="tab">Complex</button>
+          </div>
+        </div>
+        <div class="tab-group">
+          <span class="tab-group-label" id="grp-phys">Physics</span>
+          <div class="tabs">
+            <button id="tab-phase" class="tab">Phase</button>
+            <button id="tab-kepler" class="tab">Kepler</button>
+            <button id="tab-rigid" class="tab">Rigid body</button>
+            <button id="tab-chaos" class="tab">Chaos</button>
+            <button id="tab-modes" class="tab">Modes</button>
+            <button id="tab-scatter" class="tab">Scatter</button>
+            <button id="tab-charges" class="tab">Charges</button>
+            <button id="tab-minkowski" class="tab">Minkowski</button>
+            <button id="tab-quantum" class="tab">Quantum</button>
+            <button id="tab-spin" class="tab">Spin</button>
+            <button id="tab-atom" class="tab">Atom</button>
+            <button id="tab-waves" class="tab">Waves</button>
+          </div>
+        </div>
+      </nav>
+      <div class="actions">
+        <span id="diag-badge" class="diag" title="self-tests">…</span>
+        <button id="btn-lang" class="ghost" title="Sprache / language">Deutsch</button>
+        <button id="btn-save" class="ghost" title="save this view as a PNG image">⤓ Save</button>
+        <button id="btn-theme" class="ghost icon" title="toggle light / dark">☀</button>
+        <button id="btn-reset" class="ghost" title="reset camera (R)">Reset view</button>
+        <button id="btn-help" class="ghost">Help</button>
+      </div>
+    </header>
+
+    <div id="main">
+      <aside id="panel">
+        <div id="panel-fields"></div>
+        <div id="panel-matrix" style="display:none"></div>
+        <div id="panel-functions" style="display:none"></div>
+        <div id="panel-manifolds" style="display:none"></div>
+        <div id="panel-minkowski" style="display:none"></div>
+        <div id="panel-quantum" style="display:none"></div>
+        <div id="panel-phase" style="display:none"></div>
+        <div id="panel-fourier" style="display:none"></div>
+        <div id="panel-waves" style="display:none"></div>
+        <div id="panel-modes" style="display:none"></div>
+        <div id="panel-scatter" style="display:none"></div>
+        <div id="panel-charges" style="display:none"></div>
+        <div id="panel-spin" style="display:none"></div>
+        <div id="panel-atom" style="display:none"></div>
+        <div id="panel-rigid" style="display:none"></div>
+        <div id="panel-kepler" style="display:none"></div>
+        <div id="panel-chaos" style="display:none"></div>
+        <div id="panel-seq" style="display:none"></div>
+        <div id="panel-cplx" style="display:none"></div>
+        <div id="panel-points"></div>
+      </aside>
+
+      <div id="viewport">
+        <canvas id="gl"></canvas>
+        <div id="ov-formula" class="overlay ov-formula"></div>
+        <div id="ov-error" class="overlay ov-error hidden"></div>
+        <div id="ov-stats" class="overlay ov-stats"></div>
+
+        <div id="colorbar" class="overlay colorbar hidden">
+          <div class="cb-label" id="cb-label"></div>
+          <div class="cb-row">
+            <div class="cb-grad" id="cb-grad"></div>
+            <div class="cb-ticks">
+              <span id="cb-hi"></span>
+              <span id="cb-mid"></span>
+              <span id="cb-lo"></span>
+            </div>
+          </div>
+        </div>
+
+        <div id="hud-hint" class="hud-hint">drag&nbsp;·&nbsp;orbit&nbsp;&nbsp;|&nbsp;&nbsp;right-drag&nbsp;·&nbsp;pan&nbsp;&nbsp;|&nbsp;&nbsp;wheel&nbsp;·&nbsp;zoom</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Help -->
+  <div id="help" class="modal hidden">
+    <div class="modal-card">
+      <button id="btn-close-help" class="modal-close">✕</button>
+      <h2><span class="nabla">∇</span> Vector Field Lab: quick guide</h2>
+      <div id="help-body">
+
+      <h3>Fields</h3>
+      <p>Type any formula for a <b>vector field</b> <code>F = (Fx, Fy, Fz)</code> or a <b>scalar field</b> <code>f</code>.
+         Choose an <b>operator</b> to visualize its gradient, divergence, curl (rotation) or Laplacian, computed live.</p>
+      <p>To read off <b>circles or geometric structure</b>, raise <b>Arrow grid N</b>, or set <b>Arrow layout → plane</b>
+         for a dense 2-D slice of arrows (pick the plane axis &amp; position); <b>streamlines</b> trace the field lines directly.</p>
+      <p><b>Values at a point:</b> move the point <b>P</b> (magenta marker) and the readout shows the actual numbers behind the graph:
+         <code>∇·F</code>, <code>∇×F</code>, <code>∇²F</code> (or <code>∇f</code>, <code>∇²f</code> for a scalar) at P, with <code>◀ in graph</code>
+         marking whichever operator you're currently displaying.</p>
+      <p><b>Line integral ∮F·dr:</b> enable it, give a curve <code>r(t)</code> and a t-range (or use a preset), and the app
+         computes the work of your field along the path, colours the curve by <code>F·T̂</code>, and animates a trace point.
+         For a <b>closed loop</b> it flags whether the circulation is ≈ 0, a hint that <b>F is conservative</b> (has a potential φ).</p>
+      <p><b>Drop bodies into the field:</b> position <b>P</b>, drop a die-faced cube, and <b>release</b> it. The same arrows mean
+         different physics depending on the <b>reading of F</b>:</p>
+      <ul>
+        <li><b>Velocity field (flow):</b> the body is advected, <code>ẋ = F(x)</code>, and (Cauchy–Stokes) it <b>spins with
+            ω&nbsp;=&nbsp;½∇×F</b>, its volume changes at the rate <code>∇·F</code>, and with <i>Deform</i> on it carries the full
+            deformation gradient <code>Ȧ = (∇F)A</code> (shear + stretch; <code>det A</code> is the exact volume factor).
+            Try <b>Rigid rotation</b> (orbits <i>and</i> spins), <b>Simple shear</b> (tumbles at rate ½ while sliding), and the
+            <b>Irrotational vortex</b>: bodies orbit the axis but <i>never rotate</i>, the classic paddle-wheel surprise (∇×F = 0 there).</li>
+        <li><b>Force field (Newton):</b> <code>m·ẍ = F(x)</code> with a chosen mass and launch velocity <code>v₀</code>: orbits,
+            oscillations, escape. A point mass does <b>not</b> spin here: the curl of a <i>force</i> field measures
+            non-conservativity, not rotation. For a <b>scalar</b> field the body feels <code>F = −∇f</code> (f as potential energy)
+            and the readout shows <code>E = ½m|v|² + f</code> staying constant.</li>
+      </ul>
+      <p>If the field animates in <code>t</code>, the bodies' clock locks to the field clock: one shared time. Bodies that leave
+         3× the domain fade out and stop.</p>
+      <p><b>Field designer:</b> pick a property and hit <b> Generate</b>; the app constructs a random field for which the
+         property holds <i>as a mathematical identity</i>, and shows the construction. Conservative fields come as
+         <code>F = ∇φ</code> (so <code>∇×F ≡ 0</code> because curl∘grad ≡ 0), incompressible ones as <code>F = ∇×A</code>
+         (div∘curl ≡ 0), Laplace fields from a <i>harmonic</i> potential (both at once), uniform source / vorticity fields carry a
+         prescribed constant <code>∇·F</code> or <code>∇×F</code>, and the confined eddy is built from a stream function ψ whose
+         level curves are the field lines. For scalar fields: harmonic functions, Laplacian eigenfunctions
+         (<code>∇²f = −k²f</code>), and localized bumps. Each generated field arrives with a “why it works” note and a suggested
+         experiment: the recipe is the lesson.</p>
+
+      <h3>Variables &amp; syntax</h3>
+      <ul>
+        <li>Coordinates: <code>x</code>, <code>y</code>, <code>z</code>, and time <code>t</code>.</li>
+        <li>Handy shortcuts: <code>r</code>=√(x²+y²+z²), <code>rho</code>=√(x²+y²), <code>phi</code>, <code>theta</code>, <code>r2</code>=x²+y²+z².</li>
+        <li>Constants: <code>pi</code>, <code>tau</code>, <code>e</code>. Power is <code>^</code>. Implicit products work: <code>2x</code>, <code>3sin(x)</code>.</li>
+        <li>Also: <b>absolute value</b> <code>|x| − |y|</code>, <b>superscripts</b> <code>x²</code> = <code>x^2</code>, and juxtaposed
+          coordinates <code>xyz</code> = <code>x·y·z</code> (an exponent binds to the last letter: <code>xy²</code> = <code>x·y²</code>).</li>
+        <li>Functions: <code>sin cos tan asin acos atan atan2 sinh cosh tanh exp ln log10 log2 sqrt cbrt abs sign
+          floor ceil round min max mod clamp step smoothstep hypot gauss sinc</code>.</li>
+      </ul>
+
+      <h3>Comparisons &amp; regions</h3>
+      <p>Comparisons <code>&lt;</code> <code>&lt;=</code> <code>&gt;</code> <code>&gt;=</code> <code>==</code> <code>!=</code> can be
+         <b>part of a formula</b>: each evaluates to <b>1</b> (true) or <b>0</b> (false). This lets you build indicator/characteristic
+         functions, piecewise definitions and region masks:</p>
+      <ul>
+        <li><b>Indicator of a set:</b> <code>(x^2+y^2 &lt; 1)</code>, 1 inside the unit disk, 0 outside.</li>
+        <li><b>Chained</b> (a mathematician's interval): <code>0 &lt;= x &lt;= 1</code>, or an annulus <code>1 &lt; x^2+y^2 &lt; 4</code>.</li>
+        <li><b>Piecewise:</b> <code>(x&lt;0)*(-x) + (x&gt;=0)*x</code> = |x|; &nbsp; <b>mask a field:</b> <code>-y*(rho&lt;2)</code>.</li>
+        <li><b>Combine regions:</b> multiply for AND, <code>max</code> for OR, <code>1-</code> for NOT, or use
+          <code>and(a,b)</code>, <code>or(a,b)</code>, <code>not(a)</code>.</li>
+        <li><b>Proper piecewise:</b> <code>if(cond, a, b)</code> or <code>cases(c₁, v₁, c₂, v₂, …, else)</code>; only the
+          <b>active branch</b> is evaluated, so <code>if(||x,y|| != 0, x*y/||x,y||, 0)</code> is exactly 0 at the origin
+          (no 0/0). Derivatives are taken branch-wise.</li>
+        <li><b>Norms:</b> <code>||a, b, …||</code> is the current norm (Euclidean by default; switch it in the Functions lab:
+          1-norm, max-norm, p-norm). Fixed variants: <code>norm(…)</code>, <code>norm1(…)</code>, <code>norminf(…)</code>,
+          <code>normp(p, …)</code>.</li>
+      </ul>
+      <p class="muted small">Comparisons are piecewise-constant, so a gradient/Taylor of a masked function is that of the smooth part
+         inside the region and 0 outside; 1-D plots break the line cleanly across a jump.</p>
+
+      <h3>Operators</h3>
+      <ul>
+        <li><code>∇f</code> gradient: steepest-ascent vector field of a scalar.</li>
+        <li><code>∇·F</code> divergence: scalar source/sink density.</li>
+        <li><code>∇×F</code> curl: local rotation axis &amp; strength.</li>
+        <li><code>∇²</code> Laplacian: of a scalar or (component-wise) a vector.</li>
+      </ul>
+
+      <h3>Matrix Lab</h3>
+      <p>A 3×3 matrix <code>A</code> acts on space. See the deformed unit cube, the images of the basis vectors
+         (the <i>columns</i> of A), the eigenvectors, and the animated flow <code>x(t) = exp(tA)·x₀</code>.
+         The readout shows determinant, trace, rank, eigen-decomposition and the matrix exponential.</p>
+
+      <h3>Functions</h3>
+      <p>Pick a <b>type</b> in the dropdown; the panel shows only what's relevant:</p>
+      <ul>
+        <li><b>Scalar</b> <code>f(x)</code>/<code>f(x,y)</code>/<code>f(x,y,z)</code>: curve / surface / volume, with a
+          <b>Taylor</b> approximation (drag the expansion point), plus <b>gradient</b>, <b>Jacobian</b> (=∇fᵀ) and <b>Hessian</b>.</li>
+        <li><b>Vector</b> <code>F(x,y,z)</code>: a vector field whose <b>Jacobian</b> is a full 3×3 matrix; the readout gives
+          <b>det J</b>, <b>∇·F</b> (= trace) and <b>∇×F</b> (antisymmetric part), and the Jacobian's local action is drawn as a deformed cube.</li>
+      </ul>
+      <p>(Line integrals <code>∮F·dr</code> over a curve live in the <b>Fields</b> tab, where the field is defined.)</p>
+      <p><b>Total derivative.</b> The section below Taylor treats <code>df = ∇f·h</code> as what it is: a linear map. Show its
+         graph as the <b>tangent plane</b> at P, and switch on the <b>analysis</b> to test total differentiability numerically:
+         the remainder <code>f(P+hv) − f(P) − h∇f·v</code> divided by <code>h</code> is measured over shrinking <code>h</code> in
+         every direction; it must vanish, in all directions at once. The <b>direction probe</b> slices the surface along a
+         chosen <code>v</code> and compares the true one-sided slope <code>D_v f</code> with the prediction <code>∇f·v</code>.
+         Try the preset <code>xy/‖(x,y)‖ at 0</code> with P at the origin: all partial derivatives exist, yet the remainder
+         sticks at ½ along the diagonal: partials existing does <em>not</em> imply differentiability. For a vector map the
+         total derivative is the Jacobian, and the same remainder test applies to <code>F</code>.</p>
+      <p><b>Constraints &amp; constrained extrema (Extrema unter Nebenbedingungen).</b> Each row of the constraint list is one
+         relation; several rows hold simultaneously (AND). An <b>inequality</b> like <code>x^2+y^2 &lt;= 4</code> or
+         <code>2 &lt; x^2+y^2 &lt; 9</code> clips the graph cleanly to the region where it holds (boundary cells are cut exactly
+         at the edge); an <b>equality</b> like <code>x^2+y^2 = 4</code> draws the constraint curve on the surface. Every boundary
+         is drawn in red with the <b>Lagrange candidates</b> marked in yellow: the points where <code>∇f = λ·∇g</code>
+         (sign changes of <code>∇f × ∇g</code> along the curve). The readout lists each candidate with f, λ and a max/min tag.
+         Try <i>saddle + circle g = 4</i> (maxima f = 4 at (±2, 0) with λ = 1, minima f = −4 at (0, ±2) with λ = −1) and
+         <i>paraboloid on disk</i> for the inequality case. For <code>f(x,y,z)</code> the constraint set is a <b>surface</b>:
+         it is drawn (marching tetrahedra) <b>coloured by f</b>, so the constrained extrema appear as its hottest and coldest
+         spots; candidates come from Newton on <code>∇f = λ·∇g, g = c</code> and carry ∇f ∥ ∇g arrows. Try
+         <i>plane on sphere r = 3</i>: max f = 9 at (2,−1,−2) with λ = ½.</p>
+      <p><b>Continuity (Stetigkeit).</b> The continuity section classifies f on the plotted domain into
+         <code>Lipschitz ⊂ uniformly continuous ⊂ continuous</code>, each with a reason: suspected discontinuities are refined
+         by bisection (a gap that survives every refinement is a <b>jump</b>; exploding values mark a <b>pole</b>), and the
+         Lipschitz bound <code>L = sup ‖∇f‖</code> is verified by zooming in on the steepest point: if it stabilises, the mean
+         value theorem gives <code>|f(x)−f(y)| ≤ L|x−y|</code>; if it keeps growing (try <code>sqrt(|x|)</code>), no L exists,
+         yet Heine–Cantor still gives uniform continuity on the compact domain. The class depends on the domain: <code>1/x</code>
+         is not uniformly continuous on <code>(0, R]</code> but becomes Lipschitz with the constraint <code>x &gt;= 1</code>,
+         and for <code>x²</code> an outlook warns that the slope keeps growing beyond the box: on all of ℝ it would not be
+         uniformly continuous.</p>
+      <p>All derivatives and Taylor terms come from automatic differentiation. <b>Axis scale x/y/z</b> stretches the view to
+         reveal detail along an axis.</p>
+
+      <h3>Manifolds</h3>
+      <p>Explore submanifolds of ℝ³ and their geometry. Pick a <b>kind</b>:</p>
+      <ul>
+        <li><b>Parametric surface</b> <code>φ(u,v)</code>: coloured by <b>Gaussian curvature</b> K (red = elliptic, blue = hyperbolic).
+          The readout gives the tangent vectors, normal, first &amp; second <b>fundamental forms</b>, K, mean H, principal
+          curvatures, area, and the <b>Euler characteristic χ</b> via Gauss–Bonnet (sphere → 2, torus → 0).</li>
+        <li><b>Level set</b> <code>g(x,y,z)=c</code>: a real isosurface (marching tetrahedra) with the ∇g normal field and
+          <b>critical points</b>. The readout tells you whether <code>c</code> is a <b>regular value</b>: if so, the level set is a
+          smooth 2-submanifold (<i>regular value theorem</i>); at a critical value it can be singular (try the <b>cone</b>).
+          The <b>tangent plane</b> is drawn at the footpoint Q (the point P projected onto the surface by Newton steps along ∇g)
+          where <code>T_Q M = ker dg(Q) = ∇g(Q)⊥</code>: exactly the directions the total derivative sends to 0.</li>
+        <li><b>Curve</b> <code>r(t)</code>: the <b>Frenet frame</b> T (red), N (green), B (blue), with <b>curvature κ</b>,
+          <b>torsion τ</b>, and arc length. Press <b>Play</b> to run the frame along the curve.</li>
+      </ul>
+      <p>Surfaces use <code>u</code>, <code>v</code> as parameters; move the point to see how the local geometry changes.</p>
+
+      <h3>Minkowski (spacetime)</h3>
+      <p>A flat <b>1+1 spacetime diagram</b> of special relativity: the pseudo-Euclidean sibling of the Matrix lab. Time runs
+         up (<code>ct</code>), space across (<code>x</code>), and light travels at 45°. A <b>Lorentz boost is a hyperbolic
+         rotation</b> <code>Λ = exp(φK)</code>: same exp-of-a-generator as <code>R = exp(θK)</code>, but <code>K</code> is
+         symmetric and <code>cos/sin → cosh/sinh</code>, so it preserves the interval <code>s² = (ct)² − x²</code> instead of length.</p>
+      <ul>
+        <li><b>Frame velocity β:</b> drag it (or press <b>Space</b> to animate) and watch the moving frame’s <code>ct′</code>,
+          <code>x′</code> axes scissor toward the light cone. Rapidity <code>φ = artanh β</code> is the “angle”; it <b>adds</b> under
+          composition, which is exactly relativistic velocity addition.</li>
+        <li><b>Calibration hyperbolae</b> <code>s² = ±k²</code> mark the true unit lengths of the tilted axes. Read time dilation
+          and length contraction off them (Euclidean distance on the page is misleading here).</li>
+        <li><b>Lines of simultaneity</b> (<code>ct′ = const</code>) are parallel to <code>x′</code>: two events on one are
+          simultaneous in the moving frame but generally not in the lab.</li>
+        <li><b>Worldlines</b> are constant-velocity particles (0 = at rest/vertical, ±1 = light). <b>Events</b> show their
+          coordinates in both frames and the invariant <code>s²</code> (timelike / spacelike / lightlike).</li>
+        <li><b>Scenarios</b> set up simultaneity, time dilation, length contraction, the light cone, velocity addition and the
+          twin paradox.</li>
+      </ul>
+      <p class="muted small">This tab uses a fixed, undistorted 2-D view (no orbit) so 45° really means 45°. <b>R</b> resets the range.</p>
+
+      <h3>Quantum (Schrödinger 1-D)</h3>
+      <p>The time-independent Schrödinger equation <code>−½ψ″ + V(x)ψ = Eψ</code> (units <code>ℏ = m = 1</code>), solved by
+         diagonalising the finite-difference Hamiltonian. Type any <b>potential</b> <code>V(x)</code>:</p>
+      <ul>
+        <li><b>Eigenstates:</b> the energy levels <code>Eₙ</code> (horizontal lines) with each wavefunction <code>ψₙ</code>
+          drawn on its level; toggle <code>|ψ|²</code> for the probability density. Nodes increase with <code>n</code>.
+          Try <b>harmonic</b> (equally spaced), <b>infinite/finite well</b>, <b>double well</b> (tunnelling pairs), <b>Morse</b>.</li>
+        <li><b>Wave packet:</b> launch a Gaussian packet (start <code>x₀</code>, width <code>σ</code>, momentum <code>k₀</code>) and press
+          <b>▶</b>/<b>Space</b>. It is expanded in the eigenbasis, so <code>ψ(x,t)=Σ cₙψₙe^{−iEₙt}</code> is exact. See it spread,
+          bounce, or <b>tunnel</b> through a barrier when <code>⟨E⟩</code> is below the top: small grey dots mark the
+          <b>classical turning points</b> <code>V = ⟨E⟩</code>, beyond which a classical particle could never go.</li>
+        <li><b>Superposition and beats:</b> an equal mix of two eigenstates <code>ψₙ₁ + ψₙ₂</code>. One eigenstate alone is
+          stationary; the pair sloshes at the <b>beat frequency</b> <code>ω = E₂ − E₁</code> (the readout gives the period
+          <code>2π/ΔE</code>): quantum motion comes from energy <i>differences</i>.</li>
+      </ul>
+
+      <h3>Phase space (classical mechanics)</h3>
+      <p>A 1-degree-of-freedom system <code>ẍ = a(x, v, t)</code> is a flow on the phase plane <code>(x, v)</code>:
+         <code>ẋ = v</code>, <code>v̇ = a</code>. Type the acceleration <code>a</code> using <code>x</code>, the velocity
+         <code>v</code>, and time <code>t</code>.</p>
+      <ul>
+        <li>The <b>direction field</b>, <b>trajectories</b> (RK4) and <b>fixed points</b> (classified as centre / saddle /
+          node / spiral from the Jacobian) are drawn live; for a conservative force, <b>energy contours</b> <code>½v²+U(x)=E</code>
+          are the exact orbits.</li>
+        <li>Presets: <b>pendulum</b> (separatrix, libration vs rotation), <b>damped</b> &amp; <b>driven</b> pendulum, the
+          <b>double well</b> (Duffing), the <b>van der Pol</b> limit cycle. Drag the start point and press <b>▶</b>/<b>Space</b>
+          to launch a trajectory.</li>
+      </ul>
+
+      <h3>Fourier</h3>
+      <p>Any periodic <code>f</code> is a sum of sines and cosines: <code>S_N = a₀/2 + Σ aₙcos(nπx/L) + bₙsin(nπx/L)</code>.</p>
+      <ul>
+        <li><b>Series:</b> watch the partial sum <code>S_N</code> converge as you raise <code>N</code> (or press <b>▶</b>/<b>Space</b>);
+          near a jump it overshoots by ~9 % forever: the <b>Gibbs phenomenon</b>. The bar chart is the amplitude spectrum
+          <code>√(aₙ²+bₙ²)</code>. Try <b>square</b>, <b>sawtooth</b>, <b>triangle</b>.</li>
+        <li><b>Transform:</b> <code>F(k)=∫f e^{−ikx}dx</code>. A narrow signal has a wide spectrum: the readout shows
+          <code>Δx·Δk</code>, minimal for a Gaussian: the mathematical seed of the uncertainty relation.</li>
+      </ul>
+
+      <h3>Waves (1-D PDE evolution)</h3>
+      <p>Separation of variables, animated. The initial profile <code>u₀(x)</code> on <code>[0, L]</code> (ends held at zero) is
+         projected once onto the sine modes, <code>aₙ = (2/L)∫u₀ sin(nπx/L)dx</code>, and then <b>every mode evolves exactly</b>,
+         no time-stepping, no numerical error:</p>
+      <ul>
+        <li><b>Wave</b> <code>u_tt = c²u_xx</code>: mode n oscillates at <code>ωₙ = cnπ/L</code> (all multiples of ω₁, why a string
+            plays a note). Initial velocity <code>v₀</code> supported. Try the piano-hammer preset. Energy is conserved exactly.</li>
+        <li><b>Heat</b> <code>u_t = D·u_xx</code>: mode n decays as <code>e^(−Dkₙ²t)</code>; high harmonics die ~n² faster, which is
+            why diffusion smooths sharp edges first. Watch the spectrum bars vanish top-down.</li>
+        <li><b>Schrödinger</b> <code>iψ_t = −½ψ_xx</code>: the same u₀, but nothing decays; phases rotate at <code>Eₙ ∝ n²</code>,
+            the shape scrambles (dispersion) while <code>∫|ψ|²</code> stays exactly 1, and in a box the packet even revives.</li>
+      </ul>
+      <p>Feeding the <i>same bump</i> to all three equations is the whole lesson: identical modes, different physics.</p>
+
+      <h3>Modes (kleine Schwingungen)</h3>
+      <p>N masses and springs written in matrix form <code>M·ü = −K·u</code> (mass matrix M, stiffness matrix K; both shown for
+         small N). The ansatz <code>u = φe^(iωt)</code> gives the <b>generalized eigenvalue problem (K − ω²M)φ = 0</b>, symmetrised
+         as <code>K̃ = M^(−1/2)K M^(−1/2)</code> and diagonalised with the same QL eigensolver as the Schrödinger lab. Modes are
+         M-orthonormal, so any initial condition splits as <code>cₙ = φₙᵀMu(0)</code> and evolves exactly.</p>
+      <ul>
+        <li><b>Two pendula:</b> displace one; energy sloshes between them with beat period 2π/Δω.</li>
+        <li><b>Uniform chain:</b> mode shapes are sampled sine waves; the <b>dispersion view</b> plots ωₙ against q and matches
+            <code>ω = 2√(k/m)·sin(q/2)</code>: the doorway to phonons.</li>
+        <li><b>Diatomic chain (m, 3m):</b> acoustic + optical branches with a band gap.</li>
+        <li><b>Free ends:</b> translation symmetry ⇒ a <b>zero mode</b> ω₁ = 0 (the chain drifts as a whole).</li>
+        <li><b>Pendulum term g/ℓ:</b> adds gravity restoring to every mass; pure chain physics becomes coupled pendula.</li>
+      </ul>
+
+      <h3>Scatter (Streuung &amp; Wirkungsquerschnitt)</h3>
+      <p>A parallel beam of particles (energy <code>E = ½v∞²</code>, impact parameter <code>b</code>) hits a central potential
+         <code>V(r)</code>. The <b>deflection function</b> is computed from the exact classical scattering integral
+         <code>Θ(b) = π − 2∫ b·du/√(1 − b²u² − V/E)</code> (u = 1/r, turning-point singularity removed analytically), and the
+         beam view integrates real RK4 trajectories with true timestamps: particles visibly slow near the turning point.
+         The two methods agree, and the self-tests prove both against closed forms.</p>
+      <ul>
+        <li><b>dσ/dΩ = (b/sin θ)·|db/dθ|</b> is the <i>Jacobian</i> of the map b → θ: it counts how much beam area lands in each
+            solid angle. No single trajectory has a cross-section: only the family does. Where Θ(b) has a flat spot
+            (dθ/db = 0) the cross-section spikes: <b>rainbow scattering</b> (try Lennard-Jones).</li>
+        <li><b>Rutherford</b> <code>V = k/r</code>: Θ = 2·atan(k/2Eb), dσ/dΩ = (k/4E)²/sin⁴(θ/2) (green analytic overlay).
+            Head-on rays stop at <code>r₀ = k/E</code>: how the nucleus was sized. The attractive <code>−1/r</code> gives the
+            <i>identical</i> cross-section: scattering can't tell + from −.</li>
+        <li><b>Hard sphere</b>: isotropic dσ/dΩ = R²/4, total σ = πR², the only case where the cross-section is just the
+            geometric shadow. Long-range potentials (Coulomb) have <i>divergent</i> classical σ_tot.</li>
+        <li>Attractive potentials can <b>capture</b> rays (spirals into the centre, gaps in Θ(b)).</li>
+        <li><b>Annotate a ray</b>: pick one impact parameter and the graph labels the textbook triple:
+            the <b>Stoßparameter b</b> (bracket between beam axis and incoming asymptote), <b>r_min</b> (segment from the
+            centre to the closest approach), and the <b>Streuwinkel θ</b> (arc between the undeflected line and the outgoing
+            asymptote). Slide b through the beam and watch θ and r_min respond: the deflection function traced by hand.</li>
+        <li><b>Annotated Wirkungsquerschnitt:</b> the beam view also draws the <b>tube b ± db</b> (blue companion rays with a
+            db bracket) opening into the <b>dθ wedge</b>: the beam-annulus area 2πb·db landing in the solid-angle ring
+            2π·sinθ·dθ, whose ratio <i>is</i> dσ/dΩ. The readout computes the per-ray value from a local derivative of the
+            exact integral (with the analytic comparison for Rutherford / hard sphere), and the same ray appears as a labelled
+            marker on the Θ(b) and dσ/dΩ plots: one slider, three views, one ray.</li>
+      </ul>
+
+      <h3>The newest labs</h3>
+      <p>The tab bar is grouped into <b>Math</b> and <b>Physics</b>. In brief:</p>
+      <ul>
+        <li><b>Charges</b>: point-charge electrostatics with field lines, equipotentials and a movable <b>Gauss sphere</b>:
+          its numeric flux ∮E·dA is compared live against 4π·Q<sub>enc</sub>.</li>
+        <li><b>Spin</b>: a qubit on the <b>Bloch sphere</b>: exact Larmor precession about Ω, probabilities, and
+          measurement buttons that collapse the state.</li>
+        <li><b>Atom</b>: the real <b>hydrogen orbitals</b> (n ≤ 3): probability cloud or sign-coloured |ψ|² isosurface,
+          with Eₙ, ⟨r⟩ and node counts.</li>
+        <li><b>Rigid body</b>: build a body from parts (boxes, spheres, cylinders, rings; the <b>T-handle</b> and
+          <b>tennis racket</b> are presets): the app assembles and diagonalises the inertia tensor, draws the principal
+          axes, and you choose the spin axis, then watch the <b>Dzhanibekov flip</b> about the unstable middle one.
+          Place the <b>rotation centre</b> where you like: the COM at the origin, the body left at its built position,
+          or <b>pinned at a point</b> you pick: the tensor is Steiner-shifted there and the COM orbits the pin.</li>
+        <li><b>Kepler</b>: central-force orbits with the <b>Laplace–Runge–Lenz vector</b>, all three Kepler laws, the
+          V<sub>eff</sub> view, and perihelion precession for p ≠ 2.</li>
+        <li><b>Chaos</b>: the double pendulum: diverging twin trajectories and a <b>Poincaré section</b>.</li>
+        <li><b>Sequences</b>: the <b>ε–N game</b>, series as partial sums, and the <b>ε-tube</b> that separates pointwise
+          from uniform convergence.</li>
+        <li><b>Complex</b>: <b>domain colouring</b> and grid images of complex maps, with a numeric
+          <b>Cauchy–Riemann</b> check for conformality.</li>
+      </ul>
+
+      <h3>Theme</h3>
+      <p>Use the <code>☀</code> / <code>☾</code> button (top bar) to switch between dark and light mode. Your choice is remembered.</p>
+
+      <h3>Saving a plot</h3>
+      <p>Click <code>⤓ Save</code> (top bar) to download the current 3-D view as a high-resolution <b>PNG image</b>, captioned
+         with the expression you're plotting, ready to drop into notes or a report.</p>
+
+      <h3>Custom points</h3>
+      <p>The <b>Custom points</b> panel (bottom of the sidebar, always available) lets you drop colour-coded markers at exact
+         coordinates to gauge where structures sit. Points <b>persist across every tab</b>; click a point's <b>colour swatch</b>
+         to change its colour, delete points individually, or clear all.</p>
+
+      <h3>Plotting several functions</h3>
+      <p>In the <b>Functions</b> tab (types <code>f(x)</code> and <code>f(x,y)</code>), use <b>+ Add function</b> to overlay extra
+         graphs in one view, each in its own colour and sharing one vertical scale for comparison. The first (primary) function keeps
+         the full Taylor / gradient / Hessian analysis.</p>
+
+      <h3>Controls</h3>
+      <p>Left-drag orbit · right-drag (or Shift+drag) pan · wheel zoom · <b>Space</b> play/pause · <b>R</b> reset view.</p>
+      <p>Every slider's value box is <b>editable</b>. Click it and type an exact number (then Enter) instead of dragging to the right spot.
+         Number boxes accept <b>constant expressions</b> too: <code>pi</code>, <code>2pi</code>, <code>pi/4</code>, <code>sqrt(2)</code>, <code>1/3</code>. This works in matrix cells and t/u/v ranges too.</p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Vendored engine -->
+  <script src="vendor/three.min.js"></script>
+  <!-- App modules (order matters: dependencies first) -->
+  <script src="src/i18n.js"></script>
+  <script src="src/parser.js"></script>
+  <script src="src/colormaps.js"></script>
+  <script src="src/linalg.js"></script>
+  <script src="src/fieldmath.js"></script>
+  <script src="src/autodiff.js"></script>
+  <script src="src/diffcheck.js"></script>
+  <script src="src/continuity.js"></script>
+  <script src="src/manifolds.js"></script>
+  <script src="src/minkowski.js"></script>
+  <script src="src/quantum.js"></script>
+  <script src="src/dynamics.js"></script>
+  <script src="src/fourier.js"></script>
+  <script src="src/bodies.js"></script>
+  <script src="src/design.js"></script>
+  <script src="src/waves.js"></script>
+  <script src="src/modes.js"></script>
+  <script src="src/scatter.js"></script>
+  <script src="src/emcharges.js"></script>
+  <script src="src/spin.js"></script>
+  <script src="src/atom.js"></script>
+  <script src="src/rigid.js"></script>
+  <script src="src/rigidshapes.js"></script>
+  <script src="src/kepler.js"></script>
+  <script src="src/dpend.js"></script>
+  <script src="src/seqlab.js"></script>
+  <script src="src/cplx.js"></script>
+  <script src="src/controls.js"></script>
+  <script src="src/presets.js"></script>
+  <script src="src/scene.js"></script>
+  <script src="src/tests.js"></script>
+
+  <!-- UI: the kit first (shared helpers + the lab registry), then one file per
+       lab (load order = panel order), then the orchestrator -->
+  <script src="src/ui/kit.js"></script>
+  <script src="src/ui/fields.js"></script>
+  <script src="src/ui/matrix.js"></script>
+  <script src="src/ui/functions.js"></script>
+  <script src="src/ui/manifolds.js"></script>
+  <script src="src/ui/minkowski.js"></script>
+  <script src="src/ui/quantum.js"></script>
+  <script src="src/ui/phase.js"></script>
+  <script src="src/ui/fourier.js"></script>
+  <script src="src/ui/waves.js"></script>
+  <script src="src/ui/modes.js"></script>
+  <script src="src/ui/scatter.js"></script>
+  <script src="src/ui/charges.js"></script>
+  <script src="src/ui/spin.js"></script>
+  <script src="src/ui/atom.js"></script>
+  <script src="src/ui/rigid.js"></script>
+  <script src="src/ui/kepler.js"></script>
+  <script src="src/ui/chaos.js"></script>
+  <script src="src/ui/seq.js"></script>
+  <script src="src/ui/cplx.js"></script>
+  <script src="src/ui/points.js"></script>
+  <script src="src/ui/core.js"></script>
+
+  <script src="src/app.js"></script>
+</body>
+</html>

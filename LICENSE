@@ -1,0 +1,216 @@
+Required Notice: Copyright 2026 Lorenz Rutkevich (https://github.com/LorenzRutkevich)
+
+# Vector Field Lab License 1.0
+
+This license is the PolyForm Noncommercial License 1.0.0
+(<https://polyformproject.org/licenses/noncommercial/1.0.0>), reproduced
+below without change, followed by Additional Terms that add Share Alike
+and Grant Back obligations.
+
+Because of those Additional Terms, this is NOT the unmodified PolyForm
+Noncommercial License. Do not refer to it by that name.
+
+---
+
+## Acceptance
+
+In order to get any license under these terms, you must agree
+to them as both strict obligations and conditions to all
+your licenses.
+
+## Copyright License
+
+The licensor grants you a copyright license for the
+software to do everything you might do with the software
+that would otherwise infringe the licensor's copyright
+in it for any permitted purpose.  However, you may
+only distribute the software according to [Distribution
+License](#distribution-license) and make changes or new works
+based on the software according to [Changes and New Works
+License](#changes-and-new-works-license).
+
+## Distribution License
+
+The licensor grants you an additional copyright license
+to distribute copies of the software.  Your license
+to distribute covers distributing the software with
+changes and new works permitted by [Changes and New Works
+License](#changes-and-new-works-license).
+
+## Notices
+
+You must ensure that anyone who gets a copy of any part of
+the software from you also gets a copy of these terms or the
+URL for them above, as well as copies of any plain-text lines
+beginning with `Required Notice:` that the licensor provided
+with the software.  For example:
+
+> Required Notice: Copyright Yoyodyne, Inc. (http://example.com)
+
+## Changes and New Works License
+
+The licensor grants you an additional copyright license to
+make changes and new works based on the software for any
+permitted purpose.
+
+## Patent License
+
+The licensor grants you a patent license for the software that
+covers patent claims the licensor can license, or becomes able
+to license, that you would infringe by using the software.
+
+## Noncommercial Purposes
+
+Any noncommercial purpose is a permitted purpose.
+
+## Personal Uses
+
+Personal use for research, experiment, and testing for
+the benefit of public knowledge, personal study, private
+entertainment, hobby projects, amateur pursuits, or religious
+observance, without any anticipated commercial application,
+is use for a permitted purpose.
+
+## Noncommercial Organizations
+
+Use by any charitable organization, educational institution,
+public research organization, public safety or health
+organization, environmental protection organization,
+or government institution is use for a permitted purpose
+regardless of the source of funding or obligations resulting
+from the funding.
+
+## Fair Use
+
+You may have "fair use" rights for the software under the
+law. These terms do not limit them.
+
+## No Other Rights
+
+These terms do not allow you to sublicense or transfer any of
+your licenses to anyone else, or prevent the licensor from
+granting licenses to anyone else.  These terms do not imply
+any other licenses.
+
+## Patent Defense
+
+If you make any written claim that the software infringes or
+contributes to infringement of any patent, your patent license
+for the software granted under these terms ends immediately. If
+your company makes such a claim, your patent license ends
+immediately for work on behalf of your company.
+
+## Violations
+
+The first time you are notified in writing that you have
+violated any of these terms, or done anything with the software
+not covered by your licenses, your licenses can nonetheless
+continue if you come into full compliance with these terms,
+and take practical steps to correct past violations, within
+32 days of receiving notice.  Otherwise, all your licenses
+end immediately.
+
+## No Liability
+
+***As far as the law allows, the software comes as is, without
+any warranty or condition, and the licensor will not be liable
+to you for any damages arising out of these terms or the use
+or nature of the software, under any kind of legal claim.***
+
+## Definitions
+
+The **licensor** is the individual or entity offering these
+terms, and the **software** is the software the licensor makes
+available under these terms.
+
+**You** refers to the individual or entity agreeing to these
+terms.
+
+**Your company** is any legal entity, sole proprietorship,
+or other kind of organization that you work for, plus all
+organizations that have control over, are under the control of,
+or are under common control with that organization.  **Control**
+means ownership of substantially all the assets of an entity,
+or the power to direct its management and policies by vote,
+contract, or otherwise.  Control can be direct or indirect.
+
+**Your licenses** are all the licenses granted to you for the
+software under these terms.
+
+**Use** means anything you do with the software requiring one
+of your licenses.
+
+---
+
+# Additional Terms
+
+These Additional Terms are part of this license. They are strict
+obligations and conditions on all your licenses, on the same footing
+as every section above.
+
+## Share Alike
+
+If you distribute the software, or any changes or new works based on
+the software, you must do all of the following:
+
+1. License the whole of what you distribute under this license,
+   this entire document unchanged, including every plain-text line
+   beginning with `Required Notice:`. You may not add further
+   restrictions and you may not offer it under different terms.
+
+2. Provide the complete corresponding source code, in the form a
+   developer would normally use to read and change the work.
+   Distributing only minified, bundled, obfuscated, compiled, or
+   otherwise processed output does not satisfy this condition.
+
+3. Carry prominent notices stating that you changed the work and
+   giving the date of your changes.
+
+Running the software, including making it available to others over a
+network, is not distribution and does not trigger this section.
+
+## Grant Back
+
+If you distribute or publish any changes or new works based on the
+software, you grant the Original Licensor a perpetual, worldwide,
+non-exclusive, irrevocable, royalty-free, fully paid-up copyright and
+patent license to those changes and new works, with the right to
+sublicense through multiple tiers, to use, reproduce, modify,
+distribute, and otherwise exploit them for any purpose whatsoever,
+including commercial purposes, under any license terms the Original
+Licensor chooses.
+
+You retain your own copyright in your changes. This section gives the
+Original Licensor rights alongside yours; it does not take yours away
+and does not assign your copyright.
+
+The Share Alike section binds everyone else. This section does not bind
+the Original Licensor, who is free to license the software and any
+changes granted back under it on commercial terms.
+
+## Commercial Licensing
+
+This section grants no rights. Commercial use of the software is not
+permitted under this license and requires a separate written license
+from the Original Licensor, who may grant or refuse one at their sole
+discretion and on any terms. Enquiries:
+<https://github.com/LorenzRutkevich>.
+
+## Additional Definitions
+
+The **Original Licensor** is the individual named in the plain-text
+`Required Notice:` line at the top of this document, regardless of who
+distributed the copy you received.
+
+---
+
+# Third-Party Software
+
+This license covers the Original Licensor's own work. It does not, and
+cannot, change the license of third-party components distributed
+alongside it. Those components remain under their own terms:
+
+- `vendor/three.min.js` is Three.js r128, Copyright 2010-2021 Three.js
+  Authors, licensed under the MIT License
+  (SPDX-License-Identifier: MIT). Its license header is retained in the
+  file. See <https://github.com/mrdoob/three.js> for the full text.
